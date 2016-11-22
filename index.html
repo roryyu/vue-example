@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Javascript Component</title>
+    <script src="vue.js"></script>
+    <script src="mutation-summary.js"></script>
+</head>
+
+<body>
+    <div id="app-5">
+        <p>{{ message }}</p>
+        <ol>
+          <todo-item v-for="item in groceryList" v-bind:todo="item"></todo-item>
+        </ol>
+        <button v-on:click="reverseMessage">Reverse Message</button>
+    </div>
+    <span data-h-tweet="#beiber" id="tt">Isn’t Justin dreamy?<span id="tt2">Hello</span></span>
+    <script>
+
+
+        Vue.component('todo-item', {
+          props: ['todo'],
+          template: '<li>{{ todo.text }}</li>'
+        })
+
+        var vm = new Vue({
+            data: {
+                message: 'Hello World',
+                groceryList: [
+                  { text: 'Vegetables' },
+                  { text: 'Cheese' },
+                  { text: 'Whatever else humans are supposed to eat' }
+                ]
+            },
+            el: '#app-5',
+            /*template:'<div><p>{{ message }}</p>'+
+                    '<ol>'+
+                      '<todo-item v-for="item in groceryList" v-bind:todo="item"></todo-item>'+
+                    '</ol>'+
+                    '<button v-on:click="reverseMessage">Reverse Message</button></div>',*/
+            template:'',
+            methods: {
+                reverseMessage: function() {
+                    this.message = this.message.split('').reverse().join('');
+                    document.getElementById('tt').setAttribute('data-h-tweet','#hello '+new Date().toString());
+                    document.getElementById('tt2').innerHTML="Bye"+new Date().toString();
+                }
+            },
+            beforeCreated: function() {
+                console.log('beforeCreated: ', this)
+            },
+            created: function() {
+                console.log('created: ', this)
+            },
+            beforeMount: function() {
+                console.log('beforeMount: ', this)
+            },
+            mounted: function() {
+                console.log('mounted: ', this)
+            },
+            beforeUpdate: function() {
+                console.log('beforeUpdate: ', this)
+            },
+            updated: function() {
+                console.log('updated: ', this)
+            },
+            beforeDestroy:function(){
+                console.log('beforeDestroy: ', this)
+            },
+            destroyed:function(){
+                console.log('destroyed: ', this)
+            }
+        })
+
+
+        var o = {};
+        Object.defineProperty(o, 'b', {
+            get: function() {
+                return this.bValue;
+            },
+            set: function(newValue) {
+                this.bValue = newValue;
+                console.log('Setter: ' + newValue)
+            },
+            enumerable: true,
+            configurable: true
+        });
+        o.b = 'xxxx';
+
+        function handleHTweetChanges(summaries) {
+            console.log(summaries)
+          var hTweetSummary = summaries[0];
+
+          hTweetSummary.added.forEach(function(newEl) {
+            // do setup work on new elements with data-h-tweet
+          });
+
+          hTweetSummary.valueChanged.forEach(function(changeEl) {
+              console.log(changeEl)
+            //var oldValue = hTweetChanges.getOldAttribute(changeEl);
+            //var currentValue = changeEl.getAttribute('data-h-tweet');
+            // handle value changed.
+          });
+
+          hTweetSummary.removed.forEach(function(removedEl) {
+            // do tear-down or cleanup work for elements that had
+            // data-h-tweet.
+          });
+        }
+        var observer = new MutationSummary({
+          callback: handleHTweetChanges,
+          queries: [{ attribute: 'data-h-tweet' }]
+        });
+
+    </script>
+</body>
+
+</html>
